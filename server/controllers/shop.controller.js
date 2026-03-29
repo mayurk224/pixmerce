@@ -26,7 +26,11 @@ function normalizeOptionalString(value) {
 
 function normalizeTags(tags) {
   if (Array.isArray(tags)) {
-    return [...new Set(tags.map((tag) => normalizeOptionalString(tag)).filter(Boolean))];
+    return [
+      ...new Set(
+        tags.map((tag) => normalizeOptionalString(tag)).filter(Boolean),
+      ),
+    ];
   }
 
   if (typeof tags === "string") {
@@ -66,7 +70,9 @@ async function findShopByIdentifier(shopIdentifier) {
 async function createShop(req, res) {
   try {
     const name = normalizeOptionalString(req.body.name);
-    const categorySlug = buildCategorySlug(req.body.categorySlug || req.body.name);
+    const categorySlug = buildCategorySlug(
+      req.body.categorySlug || req.body.name,
+    );
     const keeperName = normalizeOptionalString(req.body.keeperName);
     const aiPersonaPrompt = normalizeOptionalString(req.body.aiPersonaPrompt);
     const coverImageUrl = normalizeOptionalString(req.body.coverImageUrl);
@@ -74,7 +80,8 @@ async function createShop(req, res) {
     if (!name || !categorySlug || !aiPersonaPrompt) {
       return res.status(400).json({
         success: false,
-        message: "name, categorySlug (or name), and aiPersonaPrompt are required",
+        message:
+          "name, categorySlug (or name), and aiPersonaPrompt are required",
       });
     }
 
@@ -143,7 +150,8 @@ async function createShopItem(req, res) {
     ) {
       return res.status(400).json({
         success: false,
-        message: "startingPrice and minPrice must be valid non-negative numbers",
+        message:
+          "startingPrice and minPrice must be valid non-negative numbers",
       });
     }
 
@@ -212,7 +220,10 @@ async function getShopItems(req, res) {
       });
     }
 
-    const items = await itemModel.find({ shopId: shop._id }).lean().sort({ name: 1 });
+    const items = await itemModel
+      .find({ shopId: shop._id })
+      .lean()
+      .sort({ name: 1 });
 
     return res.status(200).json({
       success: true,

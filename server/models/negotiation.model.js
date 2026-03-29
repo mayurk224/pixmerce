@@ -41,7 +41,7 @@ const negotiationSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["active", "won", "lost", "timeout"],
+      enum: ["active", "won", "lost", "timeout", "completed"],
       default: "active",
     },
 
@@ -58,7 +58,7 @@ const negotiationSchema = new mongoose.Schema(
       type: Date, // We set this to 60 seconds in the future every time the AI replies
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const negotiationModel = mongoose.model("negotiations", negotiationSchema);

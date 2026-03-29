@@ -8,20 +8,22 @@ const itemSchema = new mongoose.Schema(
     },
     shopId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "shops", 
+      ref: "shops",
       required: true,
     },
-    
+
     // 🔥 NEW: Sub-category for UI filtering
     subCategory: {
       type: String,
       required: true, // e.g., "Audio", "Displays", "Peripherals"
     },
-    
+
     // 🔥 NEW: Tags for searchability and gameplay flavor
-    tags: [{
-      type: String, // e.g., ["rare", "overpriced", "heavy"]
-    }],
+    tags: [
+      {
+        type: String, // e.g., ["rare", "overpriced", "heavy"]
+      },
+    ],
 
     startingPrice: {
       type: Number,
@@ -29,16 +31,16 @@ const itemSchema = new mongoose.Schema(
     },
     minPrice: {
       type: Number,
-      required: true, 
+      required: true,
     },
     imageUrl: {
       type: String,
     },
     description: {
       type: String,
-    }
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const itemModel = mongoose.model("items", itemSchema);

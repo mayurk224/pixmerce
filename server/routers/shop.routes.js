@@ -1,5 +1,10 @@
 import express from "express";
-import { createShop, createShopItem, getAllShops, getShopItems } from "../controllers/shop.controller.js";
+import {
+  createShop,
+  createShopItem,
+  getAllShops,
+  getShopItems,
+} from "../controllers/shop.controller.js";
 
 const shopRouter = express.Router();
 

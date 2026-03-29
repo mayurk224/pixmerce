@@ -1,4 +1,4 @@
-import { initializeGameSession, processUserChat } from "../services/negotiationService.js";
+import { initializeGameSession, processCheckout, processUserChat } from "../services/negotiationService.js";
 
 export const startNegotiationSession = async (req, res) => {
   try {
@@ -46,5 +46,20 @@ export const handleChatMessage = async (req, res) => {
   } catch (error) {
     console.error("Chat Error:", error.message);
     res.status(500).json({ message: "Server error processing your message." });
+  }
+};
+
+export const handleCheckout = async (req, res) => {
+  try {
+    const { sessionId, agreedPrice } = req.body;
+    const userId = req.user.id; 
+
+    const result = await processCheckout(userId, sessionId, agreedPrice);
+
+    res.status(200).json(result);
+
+  } catch (error) {
+    console.error("Checkout Error:", error.message);
+    res.status(400).json({ message: error.message });
   }
 };
