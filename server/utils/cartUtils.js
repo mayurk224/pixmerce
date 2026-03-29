@@ -6,9 +6,9 @@ export const calculateCartTotals = (items) => {
   let totalMinPrice = 0;
   const itemNames = [];
 
-  items.forEach(item => {
+  items.forEach((item) => {
     totalStartingPrice += item.startingPrice;
-    totalMinPrice += item.minPrice; 
+    totalMinPrice += item.minPrice;
     itemNames.push(item.name);
   });
 
