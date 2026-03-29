@@ -1,8 +1,11 @@
 import { Router } from "express";
-import { startNegotiationSession } from "../controllers/negotiation.controller.js";
+import { handleChatMessage, startNegotiationSession } from "../controllers/negotiation.controller.js";
+import authUser from "../middlewares/auth.middleware.js";
 
-const negotiationRoute = Router()
+const negotiationRoute = Router();
 
-negotiationRoute.post("/start", startNegotiationSession)
+negotiationRoute.post("/start", authUser, startNegotiationSession);
 
-export default negotiationRoute
+negotiationRoute.post("/chat", authUser, handleChatMessage);
+
+export default negotiationRoute;
