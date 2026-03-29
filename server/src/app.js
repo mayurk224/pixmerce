@@ -1,7 +1,9 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import authRouter from "../routers/auth.routes.js";
+import shopRouter from "../routers/shop.routes.js";
 import cors from "cors";
+import negotiationRoute from "../routers/negotiation.routes.js";
 
 const app = express();
 const allowedOrigins = (
@@ -31,5 +33,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth", authRouter);
+app.use("/api/shops", shopRouter);
+app.use("/api/negotiation", negotiationRoute);
 
 export default app;
