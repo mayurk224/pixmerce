@@ -3,7 +3,7 @@ import AvailableItems from "./AvailableItems.jsx";
 import Cart from "./Cart.jsx";
 import ChatComponent from "./ChatComponent.jsx";
 
-const ParentModal = ({ isOpen, onClose, onProceed, items }) => {
+const ParentModal = ({ isOpen, onClose, onProceed, items, shopName }) => {
   const [selectedItemIds, setSelectedItemIds] = useState([]);
   const [currentStep, setCurrentStep] = useState("selection");
   const [messages, setMessages] = useState([]);
@@ -39,7 +39,7 @@ const ParentModal = ({ isOpen, onClose, onProceed, items }) => {
   }
 
   const selectedItems = items.filter((item) =>
-    selectedItemIds.includes(item.id),
+    selectedItemIds.includes(item._id || item.id),
   );
 
   const handleToggleItem = (itemId) => {
@@ -123,7 +123,7 @@ const ParentModal = ({ isOpen, onClose, onProceed, items }) => {
                 className="text-xl font-bold tracking-[0.12em] text-yellow-200 sm:text-2xl"
                 style={{ fontFamily: "'Pixelify Sans', sans-serif" }}
               >
-                Shop
+                {shopName || "Shop"}
               </h2>
             </div>
 

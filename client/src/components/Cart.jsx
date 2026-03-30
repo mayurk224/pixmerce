@@ -20,7 +20,7 @@ const Cart = ({ items }) => {
 
           return (
             <div
-              key={item?.id ?? `empty-slot-${index}`}
+              key={item?._id ?? item?.id ?? `empty-slot-${index}`}
               className={`flex aspect-square w-16 items-center justify-center rounded-lg border text-center transition ${
                 item
                   ? "border-yellow-300/60 bg-yellow-300/10 text-yellow-100"
@@ -30,7 +30,7 @@ const Cart = ({ items }) => {
               {item ? (
                 <div className="px-1">
                   <p className="text-[9px] uppercase tracking-[0.22em] text-yellow-300/70">
-                    {item.tag}
+                    {item.subCategory || item.tag}
                   </p>
                   <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.08em]">
                     {item.name}

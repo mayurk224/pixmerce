@@ -45,9 +45,14 @@ const Navbar = ({ isMuted, onToggleMute }) => {
                   alt={user?.name ?? "Player avatar"}
                   className="h-7 w-7 rounded-full object-cover ring-1 ring-yellow-300/60"
                 />
-                <p className="pr-1 text-xs font-medium text-white">
+                <div className="">
+                  <p className="pr-1 text-xs font-medium text-white">
                   {user?.name}
                 </p>
+                <p className="pr-1 text-xs text-gray-300">
+                  Balance: {user?.walletBalance ?? 0}
+                </p>
+                </div>
               </div>
 
               {/* Logout */}
@@ -131,7 +136,10 @@ const Navbar = ({ isMuted, onToggleMute }) => {
                   alt={user?.name ?? "Player"}
                   className="h-9 w-9 rounded-full object-cover ring-2 ring-yellow-300/60"
                 />
-                <p className="text-sm font-semibold text-white">{user?.name}</p>
+                <div>
+                  <p className="text-sm font-semibold text-white">{user?.name}</p>
+                  <p className="text-xs text-gray-400">Balance: ${user?.walletBalance ?? 0}</p>
+                </div>
               </div>
 
               <a

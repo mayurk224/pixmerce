@@ -18,13 +18,14 @@ const AvailableItems = ({ items, selectedItemIds, onToggleItem }) => {
       {/* GRID */}
       <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
         {items.map((item) => {
-          const isSelected = selectedItemIds.includes(item.id);
+          const itemId = item._id || item.id;
+          const isSelected = selectedItemIds.includes(itemId);
 
           return (
             <button
-              key={item.id}
+              key={itemId}
               type="button"
-              onClick={() => onToggleItem(item.id)}
+              onClick={() => onToggleItem(itemId)}
               className={`group aspect-square rounded-lg border p-2 transition-all duration-200 ${
                 isSelected
                   ? "border-yellow-300 bg-yellow-300/10 shadow-[0_0_0_1px_rgba(253,224,71,0.4)]"
@@ -34,7 +35,7 @@ const AvailableItems = ({ items, selectedItemIds, onToggleItem }) => {
               <div className="flex h-full flex-col justify-between">
                 {/* TAG */}
                 <span className="text-[9px] uppercase tracking-[0.25em] text-slate-500">
-                  {item.tag}
+                  {item.subCategory || item.tag}
                 </span>
 
                 {/* CONTENT */}
@@ -43,7 +44,7 @@ const AvailableItems = ({ items, selectedItemIds, onToggleItem }) => {
                     {item.name}
                   </p>
                   <p className="mt-0.5 text-[10px] text-slate-400">
-                    {item.price}
+                    {item.startingPrice ? `$${item.startingPrice}` : item.price}
                   </p>
                 </div>
               </div>

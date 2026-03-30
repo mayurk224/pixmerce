@@ -57,6 +57,7 @@ const normalizeUser = (userData) => {
     email: userData.email ?? "player@pixelmarket.dev",
     name,
     avatar,
+    walletBalance: userData.walletBalance ?? 0,
   };
 };
 

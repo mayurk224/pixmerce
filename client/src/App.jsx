@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import Navbar from "./components/Navbar.jsx";
 import ParentModal from "./components/ParentModal.jsx";
 import { useAuth } from "./hooks/useAuth.js";
+import { shopService } from "./service/shopService.js";
 import AuthPage from "./pages/AuthPage.jsx";
 import Home from "./pages/Home.jsx";
 
@@ -23,11 +24,15 @@ const shopItems = [
 ];
 
 function App() {
-  const { isAuthenticated, loading } = useAuth();
+  const { user, token, isAuthenticated, loading } = useAuth();
   const audioRef = useRef(null);
   const sceneRef = useRef(null);
   const [isMuted, setIsMuted] = useState(false);
   const [isShopModalOpen, setIsShopModalOpen] = useState(false);
+  const [shops, setShops] = useState([]);
+  const [loadingShops, setLoadingShops] = useState(false);
+  const [selectedShop, setSelectedShop] = useState(null);
+  const [currentShopItems, setCurrentShopItems] = useState([]);
 
   useEffect(() => {
     const audio = new Audio("/sfx.mp3");
@@ -93,6 +98,27 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {
+    const fetchShops = async () => {
+      if (!isAuthenticated || !token) {
+        return;
+      }
+      setLoadingShops(true);
+      try {
+        const response = await shopService.getAllShops(token);
+        if (response.success) {
+          setShops(response.shops);
+        }
+      } catch (error) {
+        console.error("Failed to fetch shops:", error);
+      } finally {
+        setLoadingShops(false);
+      }
+    };
+
+    fetchShops();
+  }, [isAuthenticated, token]);
+
   const handleToggleMute = () => {
     if (!audioRef.current) {
       return;
@@ -103,8 +129,21 @@ function App() {
     setIsMuted(nextMutedState);
   };
 
-  const handleExploreItems = () => {
-    setIsShopModalOpen(true);
+  const handleExploreItems = async (shop) => {
+    if (!shop || !token) {
+      return;
+    }
+    try {
+      setSelectedShop(shop);
+      const response = await shopService.getShopItems(shop.categorySlug, token);
+      if (response.success) {
+        setCurrentShopItems(response.items);
+        setIsShopModalOpen(true);
+      }
+    } catch (error) {
+      console.error("Failed to fetch shop items:", error);
+      alert("Failed to load shop items. Please try again.");
+    }
   };
 
   const handleCloseShopModal = () => {
@@ -136,35 +175,49 @@ function App() {
             className="pointer-events-none absolute inset-0 z-20 min-w-[200vw] min-h-screen transition-transform duration-200 ease-out sm:min-w-0"
             style={parallaxTransform}
           >
-            <div className="pointer-events-auto absolute top-[75%] lg:left-[53%] left-[80%] w-fit -translate-x-1/2 -translate-y-full rounded-2xl border border-yellow-300/75 bg-slate-950 text-center text-white shadow-[0_12px_32px_rgba(15,23,42,0.45)]">
-              <h2
-                className="mt-1 text-md font-bold tracking-[0.14em] text-yellow-200"
-                style={{ fontFamily: "'Pixelify Sans', sans-serif" }}
-              >
-                Pixmerce
-              </h2>
-
-              <div className="relative flex items-center justify-center gap-2 z-30 text-[8px] p-2">
-                <button
-                  type="button"
-                  onClick={handleExploreItems}
-                  className="rounded-full border border-yellow-300/80 bg-yellow-300/10 px-3 py-1.5  font-semibold uppercase tracking-[0.25em] text-yellow-100 transition hover:-translate-y-0.5 hover:bg-yellow-300/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
-                >
-                  Enter
-                </button>
-
-                <a
-                  href="#about"
-                  className="rounded-full border border-white/20 bg-white/5 px-3 py-1.5 font-semibold uppercase tracking-[0.25em] text-white/85 transition hover:-translate-y-0.5 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
-                >
-                  About
-                </a>
+            <div className="pointer-events-auto absolute top-[75%] lg:left-[53%] left-[80%] w-fit min-w-[180px] -translate-x-1/2 -translate-y-full rounded-2xl border border-yellow-300/75 bg-slate-950 text-center text-white shadow-[0_12px_32px_rgba(15,23,42,0.45)]">
+              <div className="max-h-60 overflow-y-auto space-y-3">
+                {loadingShops ? (
+                  <p className="py-2 text-[10px] uppercase tracking-widest text-slate-400">
+                    Scanning for shops...
+                  </p>
+                ) : shops.length > 0 ? (
+                  shops.map((shop) => (
+                    <div
+                      key={shop._id}
+                      className="group relative rounded-xl border border-white/5 bg-white/5 p-2 z-30"
+                    >
+                      <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-yellow-100/90">
+                        {shop.name}
+                      </p>
+                      <div className="flex items-center justify-center gap-2 z-30">
+                        <button
+                          type="button"
+                          onClick={() => handleExploreItems(shop)}
+                          className="rounded-full border border-yellow-300/80 bg-yellow-300/10 px-4 py-1 text-[9px] font-semibold uppercase tracking-[0.25em] text-yellow-100 transition hover:-translate-y-0.5 hover:bg-yellow-300/20"
+                        >
+                          Enter
+                        </button>
+                        <a
+                          href="#about"
+                          className="inline-block rounded-full border border-white/20 bg-white/5 px-4 py-1 text-[9px] font-semibold uppercase tracking-[0.25em] text-white/85 transition hover:-translate-y-0.5 hover:bg-white/10"
+                        >
+                          About
+                        </a>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="py-2 text-[10px] uppercase tracking-widest text-slate-400">
+                    No active signals found.
+                  </p>
+                )}
               </div>
 
               {/* ARROW */}
-              <div className="absolute left-1/2 -bottom-2 h-10 w-10 -translate-x-1/2 rotate-45 border border-yellow-300/75 bg-slate-950 z-10" />
+              <div className="absolute left-1/2 -bottom-2 h-10 w-10 -translate-x-1/2 rotate-45 border border-yellow-300/75 bg-slate-950 z-0" />
 
-              {/* COVER (hides top half of arrow for clean triangle look) */}
+              {/* COVER */}
               <div className="absolute left-1/2 bottom-0 h-10 w-20 -translate-x-1/2 bg-slate-950 z-20" />
             </div>
           </div>
@@ -193,7 +246,8 @@ function App() {
           isOpen={isShopModalOpen}
           onClose={handleCloseShopModal}
           onProceed={handleProceedFromShop}
-          items={shopItems}
+          items={currentShopItems}
+          shopName={selectedShop?.name}
         />
       </div>
     </div>

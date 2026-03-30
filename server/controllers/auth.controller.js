@@ -112,6 +112,7 @@ async function googleAuth(req, res) {
         email: user.email,
         name: user.name,
         avatarUrl: user.avatarUrl,
+        walletBalance: user.walletBalance,
       },
       token: authToken,
     });
