@@ -27,9 +27,6 @@ const Navbar = ({ isMuted, onToggleMute }) => {
           {/* Desktop nav links – hidden on mobile */}
           {isAuthenticated && (
             <div className="hidden items-center gap-3 sm:flex">
-              <Link to="/" className={navLinkClassName}>
-                Home
-              </Link>
               <Link to="/leaderboard" className={navLinkClassName}>
                 Leaderboard
               </Link>
@@ -143,13 +140,7 @@ const Navbar = ({ isMuted, onToggleMute }) => {
                 </div>
               </div>
 
-              <Link
-                to="/"
-                onClick={() => setMenuOpen(false)}
-                className={`py-2 ${navLinkClassName}`}
-              >
-                Home
-              </Link>
+              
               <Link
                 to="/leaderboard"
                 onClick={() => setMenuOpen(false)}
