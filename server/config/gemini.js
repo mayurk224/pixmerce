@@ -1,9 +1,9 @@
 import dotenv from "dotenv";
 dotenv.config();
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { ChatMistralAI } from "@langchain/mistralai";
 
-export const llm = new ChatGoogleGenerativeAI({
-  model: "gemini-2.5-flash-lite",
-  apiKey: process.env.GEMINI_API_KEY,
+export const llm = new ChatMistralAI({
+  model: "mistral-small-latest",
+  apiKey: process.env.MISTRAL_API_KEY,
   temperature: 0.7,
 });
