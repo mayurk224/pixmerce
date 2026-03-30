@@ -13,7 +13,8 @@ const AuthPage = () => {
         Pixel Market
       </h1>
       <p className="mx-auto mb-8 max-w-lg text-sm leading-7 text-slate-200 sm:text-base">
-        Sign in to enter the market, track your progress, and climb the leaderboard.
+        Sign in to enter the market, track your progress, and climb the
+        leaderboard.
       </p>
       <GoogleAuthButton />
     </section>

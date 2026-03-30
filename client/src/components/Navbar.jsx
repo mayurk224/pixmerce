@@ -12,7 +12,6 @@ const Navbar = ({ isMuted, onToggleMute }) => {
     <nav className="fixed top-0 left-0 z-50 w-full bg-black/10 backdrop-blur-[2px]">
       {/* ── Main bar ── */}
       <div className="flex w-full items-center justify-between px-4 py-2 text-white sm:px-6">
-
         {/* LOGO */}
         <a
           href={isAuthenticated ? "#home" : "#"}
@@ -24,13 +23,18 @@ const Navbar = ({ isMuted, onToggleMute }) => {
 
         {/* RIGHT SECTION */}
         <div className="flex items-center gap-2 sm:gap-3">
-
           {/* Desktop nav links – hidden on mobile */}
           {isAuthenticated && (
             <div className="hidden items-center gap-3 sm:flex">
-              <a href="#home" className={navLinkClassName}>Home</a>
-              <a href="#leaderboard" className={navLinkClassName}>Leaderboard</a>
-              <a href="#about" className={navLinkClassName}>About</a>
+              <a href="#home" className={navLinkClassName}>
+                Home
+              </a>
+              <a href="#leaderboard" className={navLinkClassName}>
+                Leaderboard
+              </a>
+              <a href="#about" className={navLinkClassName}>
+                About
+              </a>
 
               <div className="h-5 w-px bg-white/10" />
 
@@ -41,7 +45,9 @@ const Navbar = ({ isMuted, onToggleMute }) => {
                   alt={user?.name ?? "Player avatar"}
                   className="h-7 w-7 rounded-full object-cover ring-1 ring-yellow-300/60"
                 />
-                <p className="pr-1 text-xs font-medium text-white">{user?.name}</p>
+                <p className="pr-1 text-xs font-medium text-white">
+                  {user?.name}
+                </p>
               </div>
 
               {/* Logout */}
@@ -51,14 +57,20 @@ const Navbar = ({ isMuted, onToggleMute }) => {
                 title="Logout"
                 className="flex h-7 w-8 items-center justify-center overflow-hidden rounded-full border border-rose-300/50 bg-rose-500/10 transition hover:scale-105 hover:bg-rose-500/20"
               >
-                <img src="/exit.jpg" alt="Logout" className="h-full w-full object-cover" />
+                <img
+                  src="/exit.jpg"
+                  alt="Logout"
+                  className="h-full w-full object-cover"
+                />
               </button>
             </div>
           )}
 
           {/* About link when NOT authenticated (desktop) */}
           {!isAuthenticated && (
-            <a href="#about" className={`hidden sm:inline ${navLinkClassName}`}>About</a>
+            <a href="#about" className={`hidden sm:inline ${navLinkClassName}`}>
+              About
+            </a>
           )}
 
           {/* Mute button – always visible */}
@@ -110,7 +122,6 @@ const Navbar = ({ isMuted, onToggleMute }) => {
         }`}
       >
         <div className="flex flex-col gap-1 border-t border-white/10 bg-black/40 px-5 py-4 backdrop-blur-md">
-
           {isAuthenticated ? (
             <>
               {/* User info row */}
@@ -123,23 +134,50 @@ const Navbar = ({ isMuted, onToggleMute }) => {
                 <p className="text-sm font-semibold text-white">{user?.name}</p>
               </div>
 
-              <a href="#home"        onClick={() => setMenuOpen(false)} className={`py-2 ${navLinkClassName}`}>Home</a>
-              <a href="#leaderboard" onClick={() => setMenuOpen(false)} className={`py-2 ${navLinkClassName}`}>Leaderboard</a>
-              <a href="#about"       onClick={() => setMenuOpen(false)} className={`py-2 ${navLinkClassName}`}>About</a>
+              <a
+                href="#home"
+                onClick={() => setMenuOpen(false)}
+                className={`py-2 ${navLinkClassName}`}
+              >
+                Home
+              </a>
+              <a
+                href="#leaderboard"
+                onClick={() => setMenuOpen(false)}
+                className={`py-2 ${navLinkClassName}`}
+              >
+                Leaderboard
+              </a>
+              <a
+                href="#about"
+                onClick={() => setMenuOpen(false)}
+                className={`py-2 ${navLinkClassName}`}
+              >
+                About
+              </a>
 
               <div className="my-2 h-px bg-white/10" />
 
               {/* Logout row */}
               <button
                 type="button"
-                onClick={() => { setMenuOpen(false); logout(); }}
+                onClick={() => {
+                  setMenuOpen(false);
+                  logout();
+                }}
                 className="flex items-center gap-2 py-2 text-sm font-semibold uppercase tracking-[0.2em] text-rose-300 transition hover:text-rose-200"
               >
                 Logout
               </button>
             </>
           ) : (
-            <a href="#about" onClick={() => setMenuOpen(false)} className={`py-2 ${navLinkClassName}`}>About</a>
+            <a
+              href="#about"
+              onClick={() => setMenuOpen(false)}
+              className={`py-2 ${navLinkClassName}`}
+            >
+              About
+            </a>
           )}
         </div>
       </div>

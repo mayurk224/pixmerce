@@ -62,7 +62,9 @@ const GoogleAuthButton = () => {
           />
           <path fill="none" d="M0 0h48v48H0z" />
         </svg>
-        <span>{isSubmitting ? "Opening Google..." : "Continue with Google"}</span>
+        <span>
+          {isSubmitting ? "Opening Google..." : "Continue with Google"}
+        </span>
       </button>
 
       {errorMessage ? (

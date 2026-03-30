@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 const API_URL = `${API_BASE_URL}/api/auth`;
 
 axios.defaults.withCredentials = true;
@@ -61,7 +62,9 @@ export const authService = {
   },
   resendVerification: async (identifier) => {
     try {
-      const response = await axios.post(`${API_URL}/resend-verify-email`, { identifier });
+      const response = await axios.post(`${API_URL}/resend-verify-email`, {
+        identifier,
+      });
       return response.data;
     } catch (error) {
       if (
@@ -71,12 +74,16 @@ export const authService = {
       ) {
         throw new Error(error.response.data.message);
       }
-      throw new Error("An error occurred while resending the verification email.");
+      throw new Error(
+        "An error occurred while resending the verification email.",
+      );
     }
   },
   forgotPassword: async (identifier) => {
     try {
-      const response = await axios.post(`${API_URL}/forgot-password`, { identifier });
+      const response = await axios.post(`${API_URL}/forgot-password`, {
+        identifier,
+      });
       return response.data;
     } catch (error) {
       if (
@@ -91,7 +98,9 @@ export const authService = {
   },
   resetPassword: async (token, newPassword) => {
     try {
-      const response = await axios.post(`${API_URL}/reset-password/${token}`, { newPassword });
+      const response = await axios.post(`${API_URL}/reset-password/${token}`, {
+        newPassword,
+      });
       return response.data;
     } catch (error) {
       if (
@@ -106,7 +115,9 @@ export const authService = {
   },
   verifyResetToken: async (token) => {
     try {
-      const response = await axios.get(`${API_URL}/verify-reset-token/${token}`);
+      const response = await axios.get(
+        `${API_URL}/verify-reset-token/${token}`,
+      );
       return response.data;
     } catch (error) {
       if (
@@ -136,7 +147,11 @@ export const authService = {
   },
   logoutUser: async (token) => {
     try {
-      const response = await axios.post(`${API_URL}/logout`, {}, getAuthConfig(token));
+      const response = await axios.post(
+        `${API_URL}/logout`,
+        {},
+        getAuthConfig(token),
+      );
       return response.data;
     } catch (error) {
       if (
@@ -163,5 +178,5 @@ export const authService = {
       }
       throw new Error("An error occurred while fetching the current user.");
     }
-  }
+  },
 };
