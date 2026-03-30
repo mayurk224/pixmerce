@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../hooks/useAuth.js";
+import { Link } from "react-router";
 
 const navLinkClassName =
   "text-sm font-semibold uppercase tracking-[0.2em] text-white/80 transition hover:text-yellow-300";
@@ -13,28 +14,28 @@ const Navbar = ({ isMuted, onToggleMute }) => {
       {/* ── Main bar ── */}
       <div className="flex w-full items-center justify-between px-4 py-2 text-white sm:px-6">
         {/* LOGO */}
-        <a
-          href={isAuthenticated ? "#home" : "#"}
+        <Link
+          to="/"
           className="text-base font-bold tracking-[0.25em] text-yellow-300"
           style={{ fontFamily: "'Pixelify Sans', sans-serif" }}
         >
           PIXMERCE
-        </a>
+        </Link>
 
         {/* RIGHT SECTION */}
         <div className="flex items-center gap-2 sm:gap-3">
           {/* Desktop nav links – hidden on mobile */}
           {isAuthenticated && (
             <div className="hidden items-center gap-3 sm:flex">
-              <a href="#home" className={navLinkClassName}>
+              <Link to="/" className={navLinkClassName}>
                 Home
-              </a>
-              <a href="#leaderboard" className={navLinkClassName}>
+              </Link>
+              <Link to="/leaderboard" className={navLinkClassName}>
                 Leaderboard
-              </a>
-              <a href="#about" className={navLinkClassName}>
+              </Link>
+              <Link to="/about" className={navLinkClassName}>
                 About
-              </a>
+              </Link>
 
               <div className="h-5 w-px bg-white/10" />
 
@@ -73,9 +74,9 @@ const Navbar = ({ isMuted, onToggleMute }) => {
 
           {/* About link when NOT authenticated (desktop) */}
           {!isAuthenticated && (
-            <a href="#about" className={`hidden sm:inline ${navLinkClassName}`}>
+            <Link to="/about" className={`hidden sm:inline ${navLinkClassName}`}>
               About
-            </a>
+            </Link>
           )}
 
           {/* Mute button – always visible */}
@@ -142,27 +143,27 @@ const Navbar = ({ isMuted, onToggleMute }) => {
                 </div>
               </div>
 
-              <a
-                href="#home"
+              <Link
+                to="/"
                 onClick={() => setMenuOpen(false)}
                 className={`py-2 ${navLinkClassName}`}
               >
                 Home
-              </a>
-              <a
-                href="#leaderboard"
+              </Link>
+              <Link
+                to="/leaderboard"
                 onClick={() => setMenuOpen(false)}
                 className={`py-2 ${navLinkClassName}`}
               >
                 Leaderboard
-              </a>
-              <a
-                href="#about"
+              </Link>
+              <Link
+                to="/about"
                 onClick={() => setMenuOpen(false)}
                 className={`py-2 ${navLinkClassName}`}
               >
                 About
-              </a>
+              </Link>
 
               <div className="my-2 h-px bg-white/10" />
 
@@ -179,13 +180,13 @@ const Navbar = ({ isMuted, onToggleMute }) => {
               </button>
             </>
           ) : (
-            <a
-              href="#about"
+            <Link
+              to="/about"
               onClick={() => setMenuOpen(false)}
               className={`py-2 ${navLinkClassName}`}
             >
               About
-            </a>
+            </Link>
           )}
         </div>
       </div>

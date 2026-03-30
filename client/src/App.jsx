@@ -5,6 +5,8 @@ import { useAuth } from "./hooks/useAuth.js";
 import { shopService } from "./service/shopService.js";
 import AuthPage from "./pages/AuthPage.jsx";
 import Home from "./pages/Home.jsx";
+import About from "./pages/About.jsx";
+import { Routes, Route, useNavigate, useLocation } from "react-router";
 
 const parallaxTransform = {
   transform: "translate(var(--parallax-x), var(--parallax-y)) scale(1.05)",
@@ -12,6 +14,8 @@ const parallaxTransform = {
 
 function App() {
   const { token, isAuthenticated, loading } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
   const audioRef = useRef(null);
   const sceneRef = useRef(null);
   const [isMuted, setIsMuted] = useState(false);
@@ -156,7 +160,7 @@ function App() {
           <div className="rounded-3xl border border-white/15 bg-slate-950/70 px-8 py-10 text-center text-white shadow-2xl backdrop-blur-xl">
             Checking session...
           </div>
-        ) : isAuthenticated ? (
+        ) : (isAuthenticated && location.pathname !== "/about") ? (
           <div
             className="pointer-events-none absolute inset-0 z-20 min-w-[200vw] min-h-screen transition-transform duration-200 ease-out sm:min-w-0"
             style={parallaxTransform}
@@ -184,12 +188,13 @@ function App() {
                         >
                           Enter
                         </button>
-                        <a
-                          href="#about"
+                        <button
+                          type="button"
+                          onClick={() => navigate('/about')}
                           className="inline-block rounded-full border border-white/20 bg-white/5 px-4 py-1 text-[9px] font-semibold uppercase tracking-[0.25em] text-white/85 transition hover:-translate-y-0.5 hover:bg-white/10"
                         >
                           About
-                        </a>
+                        </button>
                       </div>
                     </div>
                   ))
@@ -220,10 +225,22 @@ function App() {
               <div className="rounded-3xl border border-white/15 bg-slate-950/70 px-8 py-10 text-center text-white shadow-2xl backdrop-blur-xl">
                 Checking session...
               </div>
-            ) : isAuthenticated ? (
-              <Home />
             ) : (
-              <AuthPage />
+              <Routes>
+                <Route
+                  path="/"
+                  element={isAuthenticated ? <Home /> : <AuthPage />}
+                />
+                <Route
+                  path="/about"
+                  element={
+                    <>
+                      {isAuthenticated ? <Home /> : <AuthPage />}
+                      <About onBack={() => navigate("/")} />
+                    </>
+                  }
+                />
+              </Routes>
             )}
           </main>
         </div>
