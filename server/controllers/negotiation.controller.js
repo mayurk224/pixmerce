@@ -13,6 +13,10 @@ export const startNegotiationSession = async (req, res) => {
       sessionId: session._id,
       totalStartingPrice,
       aiMessage: openingLine,
+      roundsLeft: session.roundsLeft,
+      timerExpiresAt: session.timerExpiresAt,
+      currentOffer: session.currentAIOffer,
+      status: session.status,
       message: "Game Started!",
     });
   } catch (error) {

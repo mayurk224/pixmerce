@@ -10,21 +10,8 @@ const parallaxTransform = {
   transform: "translate(var(--parallax-x), var(--parallax-y)) scale(1.05)",
 };
 
-const shopItems = [
-  { id: "boots", name: "Speed Boots", tag: "Move", price: "120 coins" },
-  { id: "shield", name: "Lite Shield", tag: "Guard", price: "180 coins" },
-  { id: "potion", name: "Glow Potion", tag: "Boost", price: "90 coins" },
-  { id: "drone", name: "Scout Drone", tag: "Scan", price: "240 coins" },
-  { id: "blade", name: "Pixel Blade", tag: "Melee", price: "200 coins" },
-  { id: "core", name: "Energy Core", tag: "Power", price: "260 coins" },
-  { id: "cloak", name: "Stealth Cloak", tag: "Hide", price: "230 coins" },
-  { id: "map", name: "Zone Map", tag: "Intel", price: "70 coins" },
-  { id: "chip", name: "Lucky Chip", tag: "Drop", price: "110 coins" },
-  { id: "kit", name: "Repair Kit", tag: "Fix", price: "150 coins" },
-];
-
 function App() {
-  const { user, token, isAuthenticated, loading } = useAuth();
+  const { token, isAuthenticated, loading } = useAuth();
   const audioRef = useRef(null);
   const sceneRef = useRef(null);
   const [isMuted, setIsMuted] = useState(false);
@@ -138,6 +125,7 @@ function App() {
       const response = await shopService.getShopItems(shop.categorySlug, token);
       if (response.success) {
         setCurrentShopItems(response.items);
+        setSelectedShop(response.shop ?? shop);
         setIsShopModalOpen(true);
       }
     } catch (error) {
@@ -148,10 +136,8 @@ function App() {
 
   const handleCloseShopModal = () => {
     setIsShopModalOpen(false);
-  };
-
-  const handleProceedFromShop = () => {
-    setIsShopModalOpen(false);
+    setCurrentShopItems([]);
+    setSelectedShop(null);
   };
 
   return (
@@ -245,9 +231,8 @@ function App() {
         <ParentModal
           isOpen={isShopModalOpen}
           onClose={handleCloseShopModal}
-          onProceed={handleProceedFromShop}
           items={currentShopItems}
-          shopName={selectedShop?.name}
+          shop={selectedShop}
         />
       </div>
     </div>

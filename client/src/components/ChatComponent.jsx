@@ -1,12 +1,18 @@
 import { useEffect, useRef } from "react";
 
 const ChatComponent = ({
+  acceptDisabled,
+  acceptLabel = "Accept",
+  cancelLabel = "Cancel",
+  helperText,
+  inputDisabled,
   inputValue,
   messages,
   onAccept,
   onCancel,
   onInputChange,
   onSend,
+  sendDisabled,
 }) => {
   const messagesEndRef = useRef(null);
 
@@ -40,17 +46,22 @@ const ChatComponent = ({
         <div className="flex h-[280px] flex-col gap-2 overflow-y-auto rounded-xl border border-white/10 bg-[#050506]/80 p-2.5">
           {messages.map((message) => {
             const isUserMessage = message.type === "user";
+            const isSystemMessage = message.type === "system";
 
             return (
               <div
                 key={message.id}
-                className={`flex ${isUserMessage ? "justify-end" : "justify-start"}`}
+                className={`flex ${
+                  isUserMessage ? "justify-end" : "justify-start"
+                }`}
               >
                 <div
                   className={`max-w-[82%] rounded-2xl px-3 py-2 text-xs leading-relaxed shadow-[0_8px_18px_rgba(0,0,0,0.18)] ${
                     isUserMessage
                       ? "border border-yellow-300/60 bg-yellow-300/15 text-yellow-50"
-                      : "border border-white/10 bg-slate-900 text-slate-100"
+                      : isSystemMessage
+                        ? "border border-cyan-300/30 bg-cyan-300/10 text-cyan-50"
+                        : "border border-white/10 bg-slate-900 text-slate-100"
                   }`}
                 >
                   {message.text}
@@ -70,17 +81,25 @@ const ChatComponent = ({
               type="text"
               value={inputValue}
               onChange={(event) => onInputChange(event.target.value)}
+              disabled={inputDisabled}
               placeholder="Type your message..."
-              className="flex-1 rounded-lg border border-white/10 bg-[#050506]/90 px-3 py-2 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-yellow-300/60"
+              className="flex-1 rounded-lg border border-white/10 bg-[#050506]/90 px-3 py-2 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-yellow-300/60 disabled:cursor-not-allowed disabled:border-white/5 disabled:bg-[#050506]/50 disabled:text-slate-500"
             />
 
             <button
               type="submit"
-              className="rounded-lg border border-yellow-300/70 bg-yellow-300/10 px-4 py-2 text-xs uppercase tracking-[0.18em] text-yellow-100 transition hover:bg-yellow-300/20"
+              disabled={sendDisabled}
+              className="rounded-lg border border-yellow-300/70 bg-yellow-300/10 px-4 py-2 text-xs uppercase tracking-[0.18em] text-yellow-100 transition enabled:hover:bg-yellow-300/20 disabled:cursor-not-allowed disabled:border-white/10 disabled:bg-white/5 disabled:text-slate-500"
             >
               Send
             </button>
           </div>
+
+          {helperText ? (
+            <p className="text-[11px] leading-relaxed text-slate-400">
+              {helperText}
+            </p>
+          ) : null}
 
           <div className="flex items-center justify-between gap-3">
             <button
@@ -88,15 +107,16 @@ const ChatComponent = ({
               onClick={onCancel}
               className="rounded-lg border border-white/20 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.18em] text-slate-100 transition hover:bg-white/10"
             >
-              Cancel
+              {cancelLabel}
             </button>
 
             <button
               type="button"
               onClick={onAccept}
-              className="rounded-lg border border-yellow-300/70 bg-yellow-300/10 px-4 py-2 text-xs uppercase tracking-[0.18em] text-yellow-100 transition hover:bg-yellow-300/20"
+              disabled={acceptDisabled}
+              className="rounded-lg border border-yellow-300/70 bg-yellow-300/10 px-4 py-2 text-xs uppercase tracking-[0.18em] text-yellow-100 transition enabled:hover:bg-yellow-300/20 disabled:cursor-not-allowed disabled:border-white/10 disabled:bg-white/5 disabled:text-slate-500"
             >
-              Accept
+              {acceptLabel}
             </button>
           </div>
         </form>

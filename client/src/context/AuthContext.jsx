@@ -75,6 +75,12 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const updateUser = (userData) => {
+    const normalizedUser = normalizeUser(userData);
+    setUser(normalizedUser);
+    return normalizedUser;
+  };
+
   useEffect(() => {
     let isMounted = true;
 
@@ -101,7 +107,7 @@ export const AuthProvider = ({ children }) => {
           return;
         }
 
-        setUser(normalizeUser(response.user));
+        updateUser(response.user);
         setToken(storedToken);
       } catch {
         if (!isMounted) {
@@ -143,10 +149,18 @@ export const AuthProvider = ({ children }) => {
   }, [user]);
 
   const login = async (userData, userToken) => {
-    const normalizedUser = normalizeUser(userData);
-    setUser(normalizedUser);
+    const normalizedUser = updateUser(userData);
     setToken(userToken ?? null);
     return normalizedUser;
+  };
+
+  const refreshUser = async (activeToken = token) => {
+    if (!activeToken) {
+      return null;
+    }
+
+    const response = await authService.getCurrentUser(activeToken);
+    return updateUser(response.user);
   };
 
   const logout = () => {
@@ -161,6 +175,8 @@ export const AuthProvider = ({ children }) => {
     isAuthenticated: Boolean(user && token),
     login,
     logout,
+    refreshUser,
+    updateUser,
     loginContext: login,
     logoutContext: logout,
   };
