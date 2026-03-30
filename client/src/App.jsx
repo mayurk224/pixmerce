@@ -1,14 +1,33 @@
 import { useEffect, useRef, useState } from "react";
 import Navbar from "./components/Navbar.jsx";
+import ParentModal from "./components/ParentModal.jsx";
 import { useAuth } from "./hooks/useAuth.js";
 import AuthPage from "./pages/AuthPage.jsx";
 import Home from "./pages/Home.jsx";
 
+const parallaxTransform = {
+  transform: "translate(var(--parallax-x), var(--parallax-y)) scale(1.05)",
+};
+
+const shopItems = [
+  { id: "boots", name: "Speed Boots", tag: "Move", price: "120 coins" },
+  { id: "shield", name: "Lite Shield", tag: "Guard", price: "180 coins" },
+  { id: "potion", name: "Glow Potion", tag: "Boost", price: "90 coins" },
+  { id: "drone", name: "Scout Drone", tag: "Scan", price: "240 coins" },
+  { id: "blade", name: "Pixel Blade", tag: "Melee", price: "200 coins" },
+  { id: "core", name: "Energy Core", tag: "Power", price: "260 coins" },
+  { id: "cloak", name: "Stealth Cloak", tag: "Hide", price: "230 coins" },
+  { id: "map", name: "Zone Map", tag: "Intel", price: "70 coins" },
+  { id: "chip", name: "Lucky Chip", tag: "Drop", price: "110 coins" },
+  { id: "kit", name: "Repair Kit", tag: "Fix", price: "150 coins" },
+];
+
 function App() {
   const { isAuthenticated, loading } = useAuth();
   const audioRef = useRef(null);
-  const bgRef = useRef(null);
+  const sceneRef = useRef(null);
   const [isMuted, setIsMuted] = useState(false);
+  const [isShopModalOpen, setIsShopModalOpen] = useState(false);
 
   useEffect(() => {
     const audio = new Audio("/sfx.mp3");
@@ -40,22 +59,38 @@ function App() {
   }, []);
 
   useEffect(() => {
+    const setParallax = (x, y) => {
+      if (!sceneRef.current) {
+        return;
+      }
+
+      sceneRef.current.style.setProperty("--parallax-x", `${x}px`);
+      sceneRef.current.style.setProperty("--parallax-y", `${y}px`);
+    };
+
     const handleMouseMove = (event) => {
-      // Parallax only on desktop
-      if (window.innerWidth < 640) return;
+      if (window.innerWidth < 640) {
+        setParallax(0, 0);
+        return;
+      }
 
       const { innerWidth, innerHeight } = window;
       const x = (event.clientX / innerWidth - 0.5) * 20;
       const y = (event.clientY / innerHeight - 0.5) * 20;
 
-      if (bgRef.current) {
-        bgRef.current.style.transform = `translate(${x}px, ${y}px) scale(1.05)`;
-      }
+      setParallax(x, y);
     };
 
-    window.addEventListener("mousemove", handleMouseMove);
+    const handleMouseLeave = () => setParallax(0, 0);
 
-    return () => window.removeEventListener("mousemove", handleMouseMove);
+    setParallax(0, 0);
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseleave", handleMouseLeave);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseleave", handleMouseLeave);
+    };
   }, []);
 
   const handleToggleMute = () => {
@@ -68,31 +103,80 @@ function App() {
     setIsMuted(nextMutedState);
   };
 
+  const handleExploreItems = () => {
+    setIsShopModalOpen(true);
+  };
+
+  const handleCloseShopModal = () => {
+    setIsShopModalOpen(false);
+  };
+
+  const handleProceedFromShop = () => {
+    setIsShopModalOpen(false);
+  };
+
   return (
-    /*
-     * Mobile  : outer div scrolls horizontally (overflow-x-auto).
-     *           Background is absolute 200vw wide — user pans to explore it.
-     *           Content wrapper is sticky left-0 so it stays in the viewport.
-     * Desktop : outer div clips overflow; background is fixed with parallax.
-     */
     <div className="overflow-x-auto sm:overflow-hidden">
-      {/* Wide canvas — 200vw on mobile, collapses to nothing on desktop */}
-      <div className="relative min-w-[200vw] min-h-screen sm:min-w-0">
-        {/* Background */}
+      <div
+        ref={sceneRef}
+        className="relative min-w-[400vw] min-h-screen sm:min-w-0"
+        style={{ "--parallax-x": "0px", "--parallax-y": "0px" }}
+      >
         <div
-          ref={bgRef}
-          className="
-            absolute inset-0 min-w-[200vw] min-h-screen
-            bg-[url('/bg.png')] bg-cover bg-left will-change-transform
-            sm:fixed sm:inset-0 sm:min-w-0 sm:bg-center
-          "
+          className="absolute inset-0 min-w-[200vw] min-h-screen bg-[url('/bg.png')] bg-cover bg-left transition-transform duration-200 ease-out will-change-transform sm:fixed sm:inset-0 sm:min-w-0 sm:bg-center"
+          style={parallaxTransform}
         />
 
-        {/* Content — sticky on mobile so it stays in view while bg scrolls */}
-        <div className="sticky left-0 w-screen z-10 min-h-screen">
+        {loading ? (
+          <div className="rounded-3xl border border-white/15 bg-slate-950/70 px-8 py-10 text-center text-white shadow-2xl backdrop-blur-xl">
+            Checking session...
+          </div>
+        ) : isAuthenticated ? (
+          <div
+            className="pointer-events-none absolute inset-0 z-20 min-w-[200vw] min-h-screen transition-transform duration-200 ease-out sm:min-w-0"
+            style={parallaxTransform}
+          >
+            <div className="pointer-events-auto absolute top-[75%] lg:left-[53%] left-[80%] w-fit -translate-x-1/2 -translate-y-full rounded-2xl border border-yellow-300/75 bg-slate-950 text-center text-white shadow-[0_12px_32px_rgba(15,23,42,0.45)]">
+              <h2
+                className="mt-1 text-md font-bold tracking-[0.14em] text-yellow-200"
+                style={{ fontFamily: "'Pixelify Sans', sans-serif" }}
+              >
+                Pixmerce
+              </h2>
+
+              <div className="relative flex items-center justify-center gap-2 z-30 text-[8px] p-2">
+                <button
+                  type="button"
+                  onClick={handleExploreItems}
+                  className="rounded-full border border-yellow-300/80 bg-yellow-300/10 px-3 py-1.5  font-semibold uppercase tracking-[0.25em] text-yellow-100 transition hover:-translate-y-0.5 hover:bg-yellow-300/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+                >
+                  Enter
+                </button>
+
+                <a
+                  href="#about"
+                  className="rounded-full border border-white/20 bg-white/5 px-3 py-1.5 font-semibold uppercase tracking-[0.25em] text-white/85 transition hover:-translate-y-0.5 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+                >
+                  About
+                </a>
+              </div>
+
+              {/* ARROW */}
+              <div className="absolute left-1/2 -bottom-2 h-10 w-10 -translate-x-1/2 rotate-45 border border-yellow-300/75 bg-slate-950 z-10" />
+
+              {/* COVER (hides top half of arrow for clean triangle look) */}
+              <div className="absolute left-1/2 bottom-0 h-10 w-20 -translate-x-1/2 bg-slate-950 z-20" />
+            </div>
+          </div>
+        ) : null}
+
+        <div className="sticky left-0 z-10 min-h-screen w-screen">
           <Navbar isMuted={isMuted} onToggleMute={handleToggleMute} />
 
-          <main className="flex min-h-screen items-center justify-center px-4 pt-24 pb-8">
+          <main
+            id="market-panel"
+            className="flex min-h-screen items-center justify-center px-4 pt-24 pb-8"
+          >
             {loading ? (
               <div className="rounded-3xl border border-white/15 bg-slate-950/70 px-8 py-10 text-center text-white shadow-2xl backdrop-blur-xl">
                 Checking session...
@@ -104,6 +188,13 @@ function App() {
             )}
           </main>
         </div>
+
+        <ParentModal
+          isOpen={isShopModalOpen}
+          onClose={handleCloseShopModal}
+          onProceed={handleProceedFromShop}
+          items={shopItems}
+        />
       </div>
     </div>
   );
